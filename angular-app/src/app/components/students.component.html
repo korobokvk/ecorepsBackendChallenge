@@ -3,40 +3,83 @@
     <div class="col-sm-3">Add new Student (Name):</div>
     <div class="col-sm-1"></div>
     <div class="col-sm-3">
-      <input class="mat-input-element mat-form-field" placeholder="Student Name" [(ngModel)]="newStudentModel"/>
+      <input
+        class="mat-input-element mat-form-field"
+        placeholder="Student Name"
+        [(ngModel)]="newStudentModel"
+      />
     </div>
     <div class="col-sm-1"></div>
     <div class="col-sm-3">
-      <button class="mat-button" (click)="addStudent()" [disabled]="newStudentModel.trim().length === 0">+</button>
+      <button
+        class="mat-button"
+        (click)="addStudent()"
+        [disabled]="newStudentModel.trim().length === 0"
+      >
+        +
+      </button>
     </div>
   </div>
   <div class="row card-body">
-    <table class=" table mat-table mat-table-sticky" *ngIf="students.length > 0">
+    <table class="table mat-table mat-table-sticky" *ngIf="students.length > 0">
       <thead>
-      <tr>
-        <th scope="col">Name</th>
-      </tr>
+        <tr>
+          <th scope="col">Name</th>
+        </tr>
       </thead>
       <tbody>
-      <ng-container *ngFor="let student of students">
-      <tr>
-        <td> {{student.name}} </td>
-        <td> Completed Lessons: <b>(TODO, this is example data)</b><br>
-          <ul>
-            <li>33.3% of lessons completed</li>
-            <li>3 of 9 lessons completed</li>
-            <li>You performed better than 30% of your class mates</li>
-          </ul>
-        </td>
-        <td>
-          <button class="mat-button btn-danger" (click)="deleteStudent(student)">-</button>
-        </td>
-      </tr>
-        <tr *ngFor="let lesson of lessons">
-          <td>{{lesson.title}}</td>
-          <td><input  (click)="complete(lesson,student)" type="checkbox" class="form-check-input" id="exampleCheck1"> complete  <b>(TODO)</b> </td>
-        </tr>
-      </ng-container>
+        <ng-container *ngFor="let student of students">
+          <tr>
+            <td>{{ student.name }}</td>
+            <td>
+              <div
+                *ngFor="let completed of student.completedLessons; index as i"
+              >
+                <span *ngIf="3 >= i + 1"
+                  >Completed Lessons:
+                  <b>{{ completed.lessonId?.title }}</b></span
+                >
+              </div>
+              <br />
+              <ul>
+                <li>
+                  {{ student.completedLessonsPercentile.toFixed(2) }}% of
+                  lessons completed
+                </li>
+                <li>
+                  {{ student.completedLessonSize }} of
+                  {{ student.totalLessons }} lessons completed
+                </li>
+                <li>
+                  You performed better than
+                  {{ student.studentCompletedLessonPercentile }}% of your class
+                  mates
+                </li>
+              </ul>
+            </td>
+            <td>
+              <button
+                class="mat-button btn-danger"
+                (click)="deleteStudent(student)"
+              >
+                -
+              </button>
+            </td>
+          </tr>
+          <tr *ngFor="let lesson of lessons">
+            <td>{{ lesson.title }}</td>
+            <td>
+              <input
+                [checked]="isChecked(lesson, student)"
+                (change)="complete(lesson, student, $event)"
+                type="checkbox"
+                class="form-check-input"
+                id="exampleCheck1"
+              />
+              complete
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>
